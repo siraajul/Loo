@@ -1,108 +1,212 @@
-# Loo — Dhaka Washroom Finder
+<br>
 
-A community-powered iOS app to find clean, accessible public washrooms in Dhaka, Bangladesh.
+<div align="center">
 
-## Features
+# 🚻 Loo
+### Find a clean washroom in Dhaka — fast.
 
-- **OSM Map** — OpenStreetMap tiles via MapLibre GL Native (free, no API key)
-- **Live Location** — Blue dot on map, real-time distance sorting in the nearby list
-- **Nearby Sheet** — Horizontal scroll of the 5 closest washrooms, sorted by GPS distance
-- **Compass Finder** — Point-and-navigate arrow that rotates with the device compass toward the selected washroom, with haptic feedback as you get closer
-- **Washroom Detail** — Rating, fee, accessibility, bidet, soap/tissue availability, photo gallery
-- **Submit a Washroom** — Form with map location preview to add new community entries
-- **Filters** — Filter by type (mosque, mall, hospital, petrol pump…), gender, accessibility, price
-- **Profile & Auth** — Phone OTP sign-in via Supabase
+*Community-powered · Free forever · Built for Bangladesh*
 
-## Tech Stack
+[![iOS](https://img.shields.io/badge/iOS-17%2B-black?style=flat-square&logo=apple)](https://developer.apple.com/ios/)
+[![Swift](https://img.shields.io/badge/Swift-5.9-orange?style=flat-square&logo=swift)](https://swift.org)
+[![SwiftUI](https://img.shields.io/badge/SwiftUI-5-blue?style=flat-square&logo=swift)](https://developer.apple.com/xcode/swiftui/)
+[![MapLibre](https://img.shields.io/badge/Map-MapLibre%20%2B%20OSM-brightgreen?style=flat-square)](https://maplibre.org)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)](LICENSE)
 
-| Layer | Technology |
+</div>
+
+---
+
+> **Finding a clean public washroom in Dhaka is hard.**  
+> Dead apps, outdated listings, zero community input.  
+> Loo fixes that — open-source, OSM-powered, built by the community for the city.
+
+---
+
+## ✨ What it does
+
+| Feature | Description |
 |---|---|
-| UI | SwiftUI |
-| Map | MapLibre GL Native + OpenFreeMap tiles |
-| Persistence | SwiftData |
-| Backend | Supabase (PostgreSQL + Auth) |
-| Location | CoreLocation — GPS + compass heading |
-| Language | Swift 5.9+ |
-| Platform | iOS 17+ |
+| 🗺 **Live OSM Map** | OpenStreetMap tiles via MapLibre — no Google, no fees, always up to date |
+| 📍 **Blue Dot + Auto-Center** | Snaps to your GPS position the moment location is granted |
+| 🧭 **Compass Finder** | Real-time rotating arrow guides you turn-by-turn to the washroom, with haptic pulses as you get closer |
+| 📋 **Nearby Sheet** | 5 closest washrooms sorted by live GPS distance, updating as you move |
+| 🔍 **Detail View** | Rating, fee (৳), gender, accessibility ♿, bidet, soap, tissue, photos |
+| ➕ **Submit a Washroom** | Crowdsource new locations with map preview and community review |
+| 🎛 **Smart Filters** | Filter by type, gender, price, accessibility |
+| 🔐 **Auth** | Phone OTP sign-in via Supabase — no email required |
 
-## Project Structure
+---
+
+## 📱 Screens
+
+```
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│   🗺 Map View   │  │  🧭 Finder View  │  │  📋 Detail View  │
+│                 │  │                 │  │                 │
+│  [OSM Dhaka]   │  │   Bashundhara   │  │  ★ 4.2  Free   │
+│  📍 markers    │  │       ↑         │  │  ♿ Accessible   │
+│                 │  │      ↑↑         │  │  🚿 Bidet       │
+│ ┌─────────────┐ │  │    320 m        │  │  🧼 Soap        │
+│ │ Nearby      │ │  │     away        │  │                 │
+│ │ 🏪 320m 🕌  │ │  │ [Open in Maps] │  │ [📸 Photos]     │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+```
+
+---
+
+## 🏗 Architecture
 
 ```
 loo/
-├── App/
-│   ├── AppRouter.swift        # NavigationStack path & route enum
-│   └── Theme.swift            # Colors, fonts, spacing, radii
-├── Core/
+├── 📱 App/
+│   ├── AppRouter.swift          # NavigationStack path + route enum
+│   └── Theme.swift              # Design tokens: colors, fonts, spacing
+│
+├── 🔧 Core/
 │   ├── Location/
-│   │   ├── LocationService.swift   # CLLocationManager (GPS + compass)
-│   │   └── HeadingService.swift
+│   │   └── LocationService.swift    # GPS + live compass heading (single CLLocationManager)
 │   ├── Network/
-│   │   └── SupabaseClient.swift
+│   │   └── SupabaseClient.swift     # Supabase backend client
 │   ├── Persistence/
-│   │   ├── AppModelContainer.swift
-│   │   └── SeedData.swift         # 10 real Dhaka seed washrooms
+│   │   ├── AppModelContainer.swift  # SwiftData stack
+│   │   └── SeedData.swift           # 10 real Dhaka washrooms (offline-first)
 │   └── Utilities/
-│       ├── Formatting.swift       # Distance (m/km), fee (৳), rating
-│       └── Geo.swift              # Bearing & distance calculations
-├── Features/
-│   ├── Map/                   # Main map screen (OSMMapView wrapper)
-│   ├── Finder/                # Compass navigator
-│   ├── Detail/                # Washroom detail + photo gallery
-│   ├── NearbyList/            # Nearby sheet + cards
-│   ├── Submit/                # Add washroom form
-│   ├── Filters/               # Filter sheet
-│   ├── Auth/                  # Phone OTP sign-in
-│   └── Profile/               # User profile
-└── Models/
-    ├── Washroom.swift         # SwiftData model
+│       ├── Formatting.swift         # Distance (m/km), fee (৳), rating
+│       └── Geo.swift                # Haversine bearing & distance
+│
+├── 🎨 Features/
+│   ├── Map/          # Main map screen — MapLibre OSMMapView wrapper
+│   ├── Finder/       # Compass navigator with low-pass smoothed heading
+│   ├── Detail/       # Washroom info + photo gallery
+│   ├── NearbyList/   # Horizontal card scroll, GPS-sorted
+│   ├── Submit/       # Add washroom form with live map preview
+│   ├── Filters/      # Filter sheet (type / gender / price / accessibility)
+│   ├── Auth/         # Phone OTP
+│   └── Profile/      # User profile
+│
+└── 🗃 Models/
+    ├── Washroom.swift    # @Model — SwiftData persistent entity
     ├── Rating.swift
     ├── Submission.swift
     └── UserProfile.swift
 ```
 
-## Requirements
+---
 
+## 🧠 How the Compass Works
+
+The Finder screen gives you a real-time pointing arrow — no map needed, just walk.
+
+```
+arrowRotation = bearing(userLocation → target)  [radians]
+              − deviceHeading                    [radians]
+```
+
+- **Bearing** is computed via the Haversine formula (true north = 0, clockwise +)
+- **Heading** comes from `CLHeading.trueHeading` on the same `CLLocationManager` as GPS, so magnetic declination is applied correctly
+- A **low-pass filter** (`α = 0.15`) smooths jitter without adding lag
+- **Haptic feedback** fires every 10 m when within 100 m of the target
+
+---
+
+## 🗺 Why MapLibre + OpenFreeMap?
+
+| | Google Maps | Apple Maps | **MapLibre + OpenFreeMap** |
+|---|---|---|---|
+| Cost | 💰 Pay per load | Free (limited) | ✅ **Free forever** |
+| Bangladesh coverage | Moderate | Poor | ✅ **Excellent (HOT + OSM community)** |
+| Offline support | No | Limited | ✅ **Yes** |
+| Open source | No | No | ✅ **Yes** |
+| Custom styling | Paid | No | ✅ **Yes** |
+
+---
+
+## 🚀 Quick Start
+
+### Requirements
 - Xcode 15+
-- iOS 17+
-- Swift Package: [MapLibre GL Native](https://github.com/maplibre/maplibre-gl-native-distribution)
+- iOS 17+ device (map tiles + compass need real hardware)
+- Swift 5.9+
 
-## Setup
+### Steps
 
-1. Clone the repo
-   ```bash
-   git clone https://github.com/siraajul/Loo.git
-   cd Loo
-   ```
+```bash
+# 1. Clone
+git clone https://github.com/siraajul/Loo.git
+cd Loo
 
-2. Open `loo.xcodeproj` in Xcode. The MapLibre SPM package resolves automatically.
+# 2. Open in Xcode — MapLibre SPM package resolves automatically
+open loo.xcodeproj
+```
 
-3. Add the location privacy key to the target's Build Settings:
-   - Key: `NSLocationWhenInUseUsageDescription`
-   - Value: `Used to show washrooms near your current location.`
+**3. Add location permission** in the target's Build Settings:
+```
+INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = Used to show washrooms near your location.
+```
 
-4. (Optional) Add your Supabase credentials to `Core/Network/SupabaseClient.swift` to enable the backend.
+**4. (Optional) Supabase backend** — add your project URL and anon key to:
+```
+loo/Core/Network/SupabaseClient.swift
+```
 
-5. Build and run on a real device (map tiles and compass require hardware).
+**5. Run on device** — the app seeds 10 real Dhaka washrooms on first launch so it works immediately, even without a backend.
 
-## Seed Data
+---
 
-The app ships with 10 real Dhaka washrooms for offline-first use before the Supabase backend is wired up:
+## 🌱 Seed Data (Offline-first)
 
-- Bashundhara City Mall
-- Jamuna Future Park
-- Baitul Mukarram Mosque
-- Square Hospital
-- Dhanmondi Lake Park
-- Gulshan-1 DCC Market
-- Panthapath Petrol Pump
-- Star Kabab Restaurant
-- Motijheel Shapla Chatter
-- Uttara Sector-3 Park
+The app ships with 10 verified Dhaka washrooms so it's usable from day one:
 
-## Map Tiles
+| Washroom | Type | Fee |
+|---|---|---|
+| Bashundhara City Mall | 🏪 Mall | Free |
+| Jamuna Future Park | 🏪 Mall | Free |
+| Baitul Mukarram Mosque | 🕌 Mosque | Free |
+| Square Hospital | 🏥 Hospital | Free |
+| Dhanmondi Lake Park | 🚻 Public | ৳2 |
+| Gulshan-1 DCC Market | 🚻 Public | ৳5 |
+| Panthapath Petrol Pump | ⛽ Petrol Pump | Free |
+| Star Kabab Restaurant | 🍴 Restaurant | Free |
+| Motijheel Shapla Chatter | 🚻 Public | ৳3 |
+| Uttara Sector-3 Park | 🚻 Public | Free |
 
-This app uses [OpenFreeMap](https://openfreemap.org/) — free, open-source OSM vector tiles with no API key required. Tiles are served over HTTPS; an active internet connection is needed to render the map.
+---
 
-## License
+## 🛠 Tech Stack
 
-MIT
+| Layer | Technology |
+|---|---|
+| **UI** | SwiftUI 5 |
+| **Map** | MapLibre GL Native + OpenFreeMap (OSM vector tiles) |
+| **Local DB** | SwiftData |
+| **Backend** | Supabase (PostgreSQL + Auth + Storage) |
+| **Location** | CoreLocation — GPS + compass heading |
+| **State** | `@Observable` macro (iOS 17) |
+| **Nav** | `NavigationStack` + typed route enum |
+| **Language** | Swift 5.9 |
+
+---
+
+## 🤝 Contributing
+
+Dhaka has thousands of washrooms not yet on the map. Here's how to help:
+
+1. **Fork** this repo
+2. **Create a branch** — `git checkout -b feature/my-feature`
+3. **Commit** your changes
+4. **Push** and open a **Pull Request**
+
+Suggestions, bug reports, and new Dhaka washroom data are all welcome via [Issues](https://github.com/siraajul/Loo/issues).
+
+---
+
+## 📄 License
+
+MIT © [siraajul](https://github.com/siraajul)
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ for Dhaka · Powered by OpenStreetMap contributors</sub>
+</div>
