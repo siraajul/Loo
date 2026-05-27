@@ -42,14 +42,14 @@
 
 ```
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│   🗺 Map View   │  │  🧭 Finder View  │  │  📋 Detail View  │
+│   🗺 Map View   │  │  🧭 Finder View │  │  📋 Detail View │
 │                 │  │                 │  │                 │
-│  [OSM Dhaka]   │  │   Bashundhara   │  │  ★ 4.2  Free   │
-│  📍 markers    │  │       ↑         │  │  ♿ Accessible   │
+│  [OSM Dhaka]    │  │   Bashundhara   │  │  ★ 4.2  Free    │
+│  📍 markers     │  │       ↑         │  │  ♿ Accessible   │
 │                 │  │      ↑↑         │  │  🚿 Bidet       │
 │ ┌─────────────┐ │  │    320 m        │  │  🧼 Soap        │
 │ │ Nearby      │ │  │     away        │  │                 │
-│ │ 🏪 320m 🕌  │ │  │ [Open in Maps] │  │ [📸 Photos]     │
+│ │ 🏪 320m 🕌  │ │  │ [Open in Maps]  │  │ [📸 Photos]     │
 └─────────────────┘  └─────────────────┘  └─────────────────┘
 ```
 
