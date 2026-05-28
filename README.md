@@ -7,9 +7,9 @@
 
 *Community-powered · Free forever · Built for Bangladesh*
 
-[![iOS](https://img.shields.io/badge/iOS-17%2B-black?style=flat-square&logo=apple)](https://developer.apple.com/ios/)
-[![Swift](https://img.shields.io/badge/Swift-5.9-orange?style=flat-square&logo=swift)](https://swift.org)
-[![SwiftUI](https://img.shields.io/badge/SwiftUI-5-blue?style=flat-square&logo=swift)](https://developer.apple.com/xcode/swiftui/)
+[![iOS](https://img.shields.io/badge/iOS-26%2B-black?style=flat-square&logo=apple)](https://developer.apple.com/ios/)
+[![Swift](https://img.shields.io/badge/Swift-6-orange?style=flat-square&logo=swift)](https://swift.org)
+[![SwiftUI](https://img.shields.io/badge/SwiftUI-Liquid%20Glass-blue?style=flat-square&logo=swift)](https://developer.apple.com/xcode/swiftui/)
 [![MapLibre](https://img.shields.io/badge/Map-MapLibre%20%2B%20OSM-brightgreen?style=flat-square)](https://maplibre.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/siraajul/Loo/pulls)
 [![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)](LICENSE)
@@ -29,13 +29,20 @@
 | Feature | Description |
 |---|---|
 | 🗺 **Live OSM Map** | OpenStreetMap tiles via MapLibre — no Google, no fees, always up to date |
-| 📍 **Blue Dot + Auto-Center** | Snaps to your GPS position the moment location is granted |
+| 💧 **Liquid Glass UI** | iOS 26 floating Liquid Glass top bar — search, filter, profile pills over the map |
+| 📍 **Locate Me** | Tap to recenter on yourself anytime; auto-center on first GPS fix |
 | 🧭 **Compass Finder** | Real-time rotating arrow guides you turn-by-turn with haptic pulses as you get closer |
 | 📋 **Nearby Sheet** | 5 closest washrooms sorted by live GPS distance, updating as you move |
-| 🔍 **Detail View** | Rating, fee (৳), gender, accessibility ♿, bidet, soap, tissue, photos |
-| ➕ **Submit a Washroom** | Crowdsource new locations with map preview and community review |
-| 🎛 **Smart Filters** | Filter by type, gender, price, accessibility |
-| 🔐 **Auth** | Phone OTP sign-in via Supabase — no email required |
+| 🚺 **Women-Friendly Badge** | At-a-glance pink/grey pill on every listing — no more guessing |
+| 🌈 **Hijra-Inclusive** | Bangladesh's third gender is a first-class category, with its own marker color |
+| 🕌 **Wudu Area** | Mosques expose whether ritual ablution facilities are available |
+| 👶 **Baby Changing & Menstrual Products** | Surfaced as filterable amenities, not buried metadata |
+| ✅ **Freshness Signal** | "Verified recently / this month / old / unverified" pill — community trust at a glance |
+| ⏰ **Open Now** | Live parse of opening hours (`24/7` or `HH:mm-HH:mm`) — filter and chip in detail |
+| 🧼 **Cleanliness Score** | Separate sub-rating from overall rating, color-coded |
+| 🎛 **Real Filters** | Gender, women-friendly, accessible, free, open-now, amenities — actually applied to map + list |
+| ➕ **Submit a Washroom** | Crowdsource new locations with map preview |
+| 🔐 **Auth** | Phone OTP sign-in via Supabase — no email required *(backend pending)* |
 
 ---
 
@@ -43,14 +50,14 @@
 
 ```
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│   🗺 Map View   │  │  🧭 Finder View │  │  📋 Detail View │
+│ 🔍 ⚙ 👤  Glass  │  │  🧭 Finder View │  │  📋 Detail View │
 │                 │  │                 │  │                 │
 │  [OSM Dhaka]    │  │   Bashundhara   │  │  ★ 4.2  Free    │
-│  📍 markers     │  │       ↑         │  │  ♿ Accessible   │
-│                 │  │      ↑↑         │  │  🚿 Bidet       │
-│ ┌─────────────┐ │  │    320 m        │  │  🧼 Soap        │
-│ │ Nearby      │ │  │     away        │  │                 │
-│ │ 🏪 320m 🕌  │ │  │ [Open in Maps]  │  │ [📸 Photos]     │
+│  📍 markers     │  │       ↑         │  │ 🚺 Women OK     │
+│         📍 me   │  │      ↑↑         │  │ ✅ Verified 3d  │
+│ ┌─────────────┐ │  │    320 m        │  │ 🕒 Open now     │
+│ │ Nearby      │ │  │     away        │  │ ✨ Clean 4.3    │
+│ │ 🏪 320m 🕌  │ │  │ [Open in Maps]  │  │ 👶 Baby change  │
 └─────────────────┘  └─────────────────┘  └─────────────────┘
 ```
 
@@ -191,9 +198,9 @@ graph LR
 ## 🚀 Quick Start
 
 ### Requirements
-- Xcode 15+
-- iOS 17+ device (map tiles + compass need real hardware)
-- Swift 5.9+
+- Xcode 26+
+- iOS 26+ device (Liquid Glass UI; map tiles + compass need real hardware)
+- Swift 6
 
 ### Steps
 
@@ -224,20 +231,22 @@ let supabaseKey = "your-anon-key"
 
 ## 🌱 Seed Data (Offline-first)
 
-The app ships with 10 verified Dhaka washrooms so it's usable from day one:
+The app ships with 12 Dhaka washrooms so it's usable from day one — each with realistic hours, freshness dates, and amenity flags:
 
-| Washroom | Type | Fee |
-|---|---|---|
-| Bashundhara City Mall | 🏪 Mall | Free |
-| Jamuna Future Park | 🏪 Mall | Free |
-| Baitul Mukarram Mosque | 🕌 Mosque | Free |
-| Square Hospital | 🏥 Hospital | Free |
-| Dhanmondi Lake Park | 🚻 Public | ৳2 |
-| Gulshan-1 DCC Market | 🚻 Public | ৳5 |
-| Panthapath Petrol Pump | ⛽ Petrol Pump | Free |
-| Star Kabab Restaurant | 🍴 Restaurant | Free |
-| Motijheel Shapla Chatter | 🚻 Public | ৳3 |
-| Uttara Sector-3 Park | 🚻 Public | Free |
+| Washroom | Type | Gender | Fee | Highlights |
+|---|---|---|---|---|
+| Bashundhara City Mall | 🏪 Mall | Mixed | Free | 👶 Baby · 🩸 Menstrual · ✨ 4.3 |
+| Gulshan-1 DCC Market | 🚻 Public | Mixed | ৳5 | Verification aging |
+| Jamuna Future Park | 🏪 Mall | Mixed | Free | 👶 Baby · 🩸 Menstrual · ✨ 4.6 |
+| Baitul Mukarram Mosque | 🕌 Mosque | Male | Free | 🕌 Wudu area |
+| Dhanmondi Lake Park | 🚻 Public | Mixed | ৳2 | Verification stale |
+| Panthapath Petrol Pump | ⛽ Petrol Pump | Mixed | Free | 🕒 24/7 |
+| Square Hospital | 🏥 Hospital | Mixed | Free | 🕒 24/7 · 👶 Baby |
+| Star Kabab Restaurant | 🍴 Restaurant | Mixed | Free | 🕒 Late night |
+| Motijheel Shapla Chatter | 🚻 Public | Male | ৳3 | Verification stale |
+| Uttara Sector-3 Park | 🚻 Public | Mixed | Free | — |
+| Banani DCC Trans-Inclusive Stop | 🚻 Public | 🌈 **Hijra** | Free | Bandhu-affiliated |
+| Lalbagh Fort Family Restroom | 🚻 Public | 👨‍👩‍👧 Family | ৳10 | 👶 Baby changing |
 
 ---
 
@@ -261,26 +270,36 @@ The app ships with 10 verified Dhaka washrooms so it's usable from day one:
 ### ✅ v0.1 — Foundation (Done)
 - [x] OSM map with MapLibre GL Native
 - [x] GPS blue dot + auto-center on user
+- [x] Locate-me FAB (Liquid Glass) for re-centering
 - [x] Custom washroom markers (color-coded by gender/type)
 - [x] Nearby sheet sorted by real GPS distance
 - [x] Compass Finder with smooth arrow + haptics
-- [x] Washroom detail view (rating, fee, accessibility, amenities)
 - [x] Submit a washroom form with map preview
-- [x] Filter sheet (type, gender, price, accessibility)
-- [x] Phone OTP auth via Supabase
-- [x] 10 seed washrooms for offline-first experience
+- [x] 12 seed washrooms (incl. hijra + family) for offline-first experience
 
-### 🔨 v0.2 — Community (In Progress)
+### ✅ v0.2 — Local Fit & Inclusivity (Done)
+- [x] iOS 26 Liquid Glass top bar (search, filter, profile, locate-me)
+- [x] Women-friendly badge (pink/grey pill at-a-glance)
+- [x] Hijra (third-gender) category with own marker color
+- [x] Wudu area attribute on mosques
+- [x] Baby changing + menstrual products amenities
+- [x] Cleanliness sub-rating (separate from overall)
+- [x] Freshness signal ("Verified recently / aging / stale / unverified")
+- [x] Open-now status — parses `24/7` and `HH:mm-HH:mm` windows
+- [x] Filter sheet wired to map + nearby list (was decorative before)
+
+### 🔨 v0.3 — Community (In Progress)
 - [ ] Live Supabase sync — fetch real washroom data from backend
-- [ ] Submit washroom → Supabase review queue
+- [ ] Submit washroom → Supabase review queue (currently no-ops)
 - [ ] Star ratings + written reviews
-- [ ] Photo upload via Supabase Storage
+- [ ] Photo upload via Supabase Storage (gallery currently always empty)
 - [ ] Moderator approval flow
+- [ ] Real "Open in Maps" deep-link from DetailView (currently dead)
+- [ ] Phone OTP auth via Supabase (currently stubbed)
 
-### 🔭 v0.3 — Discovery
-- [ ] Full-text search across washroom names and areas
+### 🔭 v0.4 — Discovery
+- [ ] Full-text search across washroom names and areas (search bar currently decorative)
 - [ ] Search suggestions as you type
-- [ ] Filter by "open now" (operating hours)
 - [ ] Sort by rating, distance, or price
 - [ ] Cluster markers at low zoom levels
 

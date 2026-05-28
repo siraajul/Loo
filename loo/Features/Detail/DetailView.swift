@@ -35,12 +35,21 @@ struct DetailView: View {
                                 }
                             }
 
-                            // Distance pill
-                            if let d = washroom.distanceMeters {
-                                Label(Formatting.distance(d), systemImage: "location.fill")
-                                    .font(.looCaption)
-                                    .foregroundStyle(Color.textSecondary)
+                            // Inclusivity + freshness badges
+                            HStack(spacing: Spacing.xs) {
+                                WomenFriendlyBadge(gender: washroom.gender)
+                                FreshnessBadge(freshness: washroom.freshness)
                             }
+
+                            // Distance + opening status
+                            HStack(spacing: Spacing.md) {
+                                if let d = washroom.distanceMeters {
+                                    Label(Formatting.distance(d), systemImage: "location.fill")
+                                }
+                                OpeningStatusLabel(washroom: washroom)
+                            }
+                            .font(.looCaption)
+                            .foregroundStyle(Color.textSecondary)
 
                             // Action row
                             HStack(spacing: Spacing.sm) {
@@ -98,6 +107,27 @@ struct DetailView: View {
 
 // MARK: - Sub-views
 
+private struct WomenFriendlyBadge: View {
+    let gender: WashroomGender
+
+    var body: some View {
+        let friendly = gender.isWomenFriendly
+        HStack(spacing: 6) {
+            Image(systemName: friendly ? "checkmark.seal.fill" : "xmark.seal.fill")
+            Text(friendly ? "Women Friendly" : "Men Only")
+                .fontWeight(.semibold)
+        }
+        .font(.looCaption)
+        .foregroundStyle(friendly ? Color.womenPink : Color.textSecondary)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
+        .background(
+            (friendly ? Color.womenPink : Color.textSecondary).opacity(0.12),
+            in: Capsule()
+        )
+    }
+}
+
 private struct RatingPill: View {
     let rating: Double
     let count: Int
@@ -120,13 +150,65 @@ private struct InfoGrid: View {
 
     var body: some View {
         LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: Spacing.sm) {
-            InfoCell(icon: washroom.gender.systemImage,  label: washroom.gender.displayName, tint: .brand)
+            InfoCell(icon: washroom.gender.systemImage,
+                     label: washroom.gender.displayName,
+                     tint: washroom.gender.markerColor)
             InfoCell(icon: washroom.accessible ? "figure.roll" : "figure.walk",
                      label: washroom.accessible ? "Accessible" : "Standard",
                      tint: washroom.accessible ? .brand : .textSecondary)
             InfoCell(icon: "banknote", label: Formatting.fee(washroom.feeBdt),
                      tint: washroom.isFree ? .success : .warning)
-            InfoCell(icon: washroom.type.systemImage, label: washroom.type.displayName, tint: .brand)
+            InfoCell(icon: washroom.type.systemImage,
+                     label: washroom.type.displayName, tint: .brand)
+            if let clean = washroom.cleanlinessRating {
+                InfoCell(icon: "sparkles", label: String(format: "Clean %.1f", clean),
+                         tint: clean >= 3.5 ? .success : (clean >= 2.5 ? .warning : .danger))
+            }
+            if washroom.babyChanging == true {
+                InfoCell(icon: "figure.and.child.holdinghands",
+                         label: "Baby changing", tint: .brand)
+            }
+            if washroom.menstrualProducts == true {
+                InfoCell(icon: "heart.circle.fill",
+                         label: "Menstrual products", tint: .womenPink)
+            }
+            if washroom.type == .mosque, washroom.wuduArea == true {
+                InfoCell(icon: "drop.fill",
+                         label: "Wudu area", tint: .brand)
+            }
+        }
+    }
+}
+
+private struct FreshnessBadge: View {
+    let freshness: WashroomFreshness
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: freshness.systemImage)
+            Text(freshness.label).fontWeight(.semibold)
+        }
+        .font(.looCaption)
+        .foregroundStyle(freshness.tint)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
+        .background(freshness.tint.opacity(0.12), in: Capsule())
+    }
+}
+
+private struct OpeningStatusLabel: View {
+    let washroom: Washroom
+
+    var body: some View {
+        switch washroom.isOpen() {
+        case .some(true):
+            Label("Open now", systemImage: "clock.fill")
+                .foregroundStyle(Color.success)
+        case .some(false):
+            Label("Closed", systemImage: "clock")
+                .foregroundStyle(Color.warning)
+        case .none:
+            EmptyView()
         }
     }
 }

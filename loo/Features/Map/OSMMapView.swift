@@ -9,6 +9,8 @@ struct OSMMapView: UIViewRepresentable {
     let onWashroomTap: (String) -> Void
     /// Passed from LocationService; when non-nil the map centers once on the user.
     var userLocation: CLLocationCoordinate2D?
+    /// Bump this (e.g. with a new UUID) to recenter the map on `userLocation`.
+    var recenterToken: UUID?
 
     private static let styleURL    = URL(string: "https://tiles.openfreemap.org/styles/liberty")!
     private static let dhakaCenter = CLLocationCoordinate2D(latitude: 23.7749, longitude: 90.3990)
@@ -20,11 +22,17 @@ struct OSMMapView: UIViewRepresentable {
         // SwiftUI will resize via autoresizingMask before the first frame is drawn.
         let map = MLNMapView(frame: UIScreen.main.bounds, styleURL: Self.styleURL)
         map.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        // Prevent UIKit from auto-inseting the map for the parent safe area;
+        // SwiftUI's `.ignoresSafeArea()` already governs the layout.
+        map.insetsLayoutMarginsFromSafeArea = false
+        // We set contentInset explicitly below — disable MapLibre's auto-adjust
+        // (also silences the UIViewController.automaticallyAdjustsScrollViewInsets deprecation warning).
+        map.automaticallyAdjustsContentInset = false
         map.delegate = context.coordinator
         map.showsUserLocation = true
         map.setCenter(Self.dhakaCenter, zoomLevel: 13, animated: false)
-        // Keep visible content between the floating top bar and the nearby sheet
-        map.contentInset = UIEdgeInsets(top: 110, left: 0, bottom: 160, right: 0)
+        // Keep camera focus between the floating top bar (~95pt) and the nearby sheet
+        map.contentInset = UIEdgeInsets(top: 95, left: 0, bottom: 160, right: 0)
         map.compassViewMargins = CGPoint(x: 16, y: 110)
         return map
     }
@@ -35,6 +43,13 @@ struct OSMMapView: UIViewRepresentable {
         if let coord = userLocation, !context.coordinator.hasCenteredOnUser {
             context.coordinator.hasCenteredOnUser = true
             map.setCenter(coord, zoomLevel: 15, animated: true)
+        }
+        // Recenter when the user taps the locate-me button (token transitions from one value to a new non-nil value).
+        if let token = recenterToken,
+           token != context.coordinator.lastRecenterToken,
+           let coord = userLocation {
+            context.coordinator.lastRecenterToken = token
+            map.setCenter(coord, zoomLevel: 16, animated: true)
         }
     }
 
@@ -74,6 +89,7 @@ struct OSMMapView: UIViewRepresentable {
     final class Coordinator: NSObject, MLNMapViewDelegate {
         var parent: OSMMapView
         var hasCenteredOnUser = false
+        var lastRecenterToken: UUID?
         init(parent: OSMMapView) { self.parent = parent }
 
         func mapView(_ map: MLNMapView, viewFor annotation: MLNAnnotation) -> MLNAnnotationView? {

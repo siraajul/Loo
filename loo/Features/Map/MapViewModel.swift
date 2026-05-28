@@ -10,6 +10,9 @@ final class MapViewModel {
     var isFilterSheetPresented = false
     var isProfilePresented     = false
     var isSubmitPresented      = false
+    /// Bumped each time the user taps the locate-me button; OSMMapView observes this to recenter.
+    /// `nil` until the first tap so the map doesn't recenter on initial render.
+    var recenterTrigger: UUID? = nil
 
     // TODO: Fetch washrooms from WashroomRepository based on current map region
     // TODO: Cache results into SwiftData via modelContext

@@ -12,6 +12,7 @@ extension Color {
     // Gender marker colors
     static let womenPink      = Color(hex: 0xFF2D78)   // safety pink — female washrooms
     static let menBlue        = Color(hex: 0x007AFF)   // iOS blue — male washrooms
+    static let hijraPurple    = Color(hex: 0x7D5BA6)   // hijra (third-gender) washrooms
     static let surface        = Color(.systemBackground)
     static let surfaceElev    = Color(.secondarySystemBackground)
     static let textPrimary    = Color(.label)

@@ -11,13 +11,19 @@ struct MapView: View {
     private var washrooms: [Washroom]
     @State private var viewModel = MapViewModel()
 
-    /// Washrooms sorted by distance from the user, closest first.
+    /// Washrooms passed through the current filter options.
+    private var filteredWashrooms: [Washroom] {
+        viewModel.filterOptions.apply(to: washrooms)
+    }
+
+    /// Filtered washrooms sorted by distance from the user, closest first.
     private var nearbyWashrooms: [Washroom] {
+        let pool = filteredWashrooms
         guard let userCoord = locationService.location?.coordinate else {
-            return Array(washrooms.prefix(5))
+            return Array(pool.prefix(5))
         }
         return Array(
-            washrooms
+            pool
                 .sorted { Geo.distance(from: userCoord, to: $0.coordinate)
                         < Geo.distance(from: userCoord, to: $1.coordinate) }
                 .prefix(5)
@@ -36,7 +42,7 @@ struct MapView: View {
     var body: some View {
         mapLayer
             .ignoresSafeArea()
-            // Top bar floats over the map; top padding = status bar + small gap
+            // Top bar floats over the map as Liquid Glass pills
             .overlay(alignment: .top) {
                 TopBar(
                     searchText:   $viewModel.searchText,
@@ -44,24 +50,28 @@ struct MapView: View {
                     onFilterTap:  { viewModel.isFilterSheetPresented = true },
                     onProfileTap: { router.navigate(to: .profile) }
                 )
-                .padding(.horizontal, Spacing.sm)
+                .padding(.horizontal, Spacing.md)
                 .padding(.top, statusBarHeight + Spacing.xs)
-                .padding(.bottom, Spacing.xs)
-                .background {
-                    Rectangle()
-                        .fill(.regularMaterial)
-                        .ignoresSafeArea(edges: .top)
-                }
             }
             .safeAreaInset(edge: .bottom) {
                 NearbySheet(washrooms: nearbyWashrooms)
             }
             .overlay(alignment: .bottomTrailing) {
-                AddWashroomFAB { viewModel.isSubmitPresented = true }
-                    .padding(.trailing, Spacing.md)
-                    .padding(.bottom, 160)
+                VStack(spacing: Spacing.sm) {
+                    LocateMeFAB {
+                        guard locationService.location != nil else {
+                            locationService.requestPermission()
+                            return
+                        }
+                        viewModel.recenterTrigger = UUID()
+                    }
+                    AddWashroomFAB { viewModel.isSubmitPresented = true }
+                }
+                .padding(.trailing, Spacing.md)
+                .padding(.bottom, 160)
             }
             .toolbar(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .sheet(isPresented: $viewModel.isSubmitPresented) {
                 SubmitView(prefilledCoordinate: locationService.location?.coordinate)
             }
@@ -88,9 +98,10 @@ struct MapView: View {
             Rectangle().fill(Color(UIColor.secondarySystemBackground))
         } else {
             OSMMapView(
-                washrooms: washrooms,
+                washrooms: filteredWashrooms,
                 onWashroomTap: { router.navigate(to: .detail(washroomID: $0)) },
-                userLocation: locationService.location?.coordinate
+                userLocation: locationService.location?.coordinate,
+                recenterToken: viewModel.recenterTrigger
             )
         }
     }
@@ -113,6 +124,20 @@ private struct AddWashroomFAB: View {
     }
 }
 
+private struct LocateMeFAB: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "location.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(Color.brand)
+                .frame(width: 48, height: 48)
+        }
+        .glassEffect(.regular.interactive(), in: .circle)
+    }
+}
+
 private struct TopBar: View {
     @Binding var searchText: String
     let filterActive: Bool
@@ -120,39 +145,48 @@ private struct TopBar: View {
     let onProfileTap: () -> Void
 
     var body: some View {
-        HStack(spacing: Spacing.sm) {
+        GlassEffectContainer(spacing: Spacing.sm) {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Color.textSecondary)
-                TextField("Search washrooms…", text: $searchText)
-                    .font(.looBody)
-                if !searchText.isEmpty {
-                    Button { searchText = "" } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color.textSecondary)
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(Color.textSecondary)
+                    TextField("Search washrooms…", text: $searchText)
+                        .font(.looBody)
+                        .textFieldStyle(.plain)
+                    if !searchText.isEmpty {
+                        Button { searchText = "" } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(Color.textSecondary)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-            }
-            .padding(.horizontal, Spacing.sm)
-            .padding(.vertical, 10)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: Radius.button))
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, 12)
+                .glassEffect(.regular.interactive(), in: .capsule)
 
-            Button(action: onFilterTap) {
-                Image(systemName: filterActive
-                      ? "line.3.horizontal.decrease.circle.fill"
-                      : "line.3.horizontal.decrease.circle")
-                    .font(.system(size: 22))
-                    .foregroundStyle(filterActive ? Color.brand : Color.textPrimary)
-                    .frame(width: 44, height: 44)
-                    .background(.regularMaterial, in: Circle())
-            }
+                Button(action: onFilterTap) {
+                    Image(systemName: filterActive
+                          ? "line.3.horizontal.decrease"
+                          : "line.3.horizontal.decrease")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(filterActive ? Color.white : Color.textPrimary)
+                        .frame(width: 44, height: 44)
+                }
+                .glassEffect(
+                    filterActive
+                        ? .regular.tint(Color.brand).interactive()
+                        : .regular.interactive(),
+                    in: .circle
+                )
 
-            Button(action: onProfileTap) {
-                Image(systemName: "person.circle")
-                    .font(.system(size: 22))
-                    .foregroundStyle(Color.textPrimary)
-                    .frame(width: 44, height: 44)
-                    .background(.regularMaterial, in: Circle())
+                Button(action: onProfileTap) {
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(Color.textPrimary)
+                        .frame(width: 44, height: 44)
+                }
+                .glassEffect(.regular.interactive(), in: .circle)
             }
         }
     }
