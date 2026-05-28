@@ -2,7 +2,9 @@
 
 <div align="center">
 
-# 🚻 Loo
+<img src="loo/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" width="120" alt="Loo app icon">
+
+# Loo
 ### Find a clean washroom in Dhaka — fast.
 
 *Community-powered · Free forever · Built for Bangladesh*
