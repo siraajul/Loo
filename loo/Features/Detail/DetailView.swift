@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct DetailView: View {
     let washroomID: String
@@ -99,9 +100,9 @@ struct DetailView: View {
 
     private func openInMaps(washroom: Washroom) {
         let coords = "\(washroom.latitude),\(washroom.longitude)"
-        guard let url = URL(string: "maps://?ll=\(coords)&q=\(washroom.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") else { return }
-        // TODO: UIApplication.shared.open(url)
-        _ = url
+        let name = washroom.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        guard let url = URL(string: "maps://?ll=\(coords)&q=\(name)") else { return }
+        UIApplication.shared.open(url)
     }
 }
 

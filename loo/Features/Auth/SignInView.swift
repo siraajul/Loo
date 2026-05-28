@@ -4,6 +4,7 @@ import AuthenticationServices
 struct SignInView: View {
     @Environment(AppRouter.self) private var router
     @Environment(\.dismiss)      private var dismiss
+    @State private var showPhoneOTP = false
 
     var body: some View {
         VStack(spacing: Spacing.xl) {
@@ -34,7 +35,7 @@ struct SignInView: View {
                 .cornerRadius(Radius.button / 2)
 
                 Button {
-                    // TODO: Navigate to PhoneOTPView
+                    showPhoneOTP = true
                 } label: {
                     Label("Continue with Phone", systemImage: "phone.fill")
                         .frame(maxWidth: .infinity)
@@ -49,9 +50,16 @@ struct SignInView: View {
                 }
                 .font(.looCaption)
                 .foregroundStyle(Color.textSecondary)
+
+                Text("Demo mode — backend auth ships in v0.3")
+                    .font(.looCaption)
+                    .foregroundStyle(Color.textSecondary)
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
+        }
+        .sheet(isPresented: $showPhoneOTP) {
+            PhoneOTPView()
         }
     }
 

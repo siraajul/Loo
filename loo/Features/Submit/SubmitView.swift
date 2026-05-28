@@ -28,10 +28,10 @@ struct SubmitView: View {
                         }
                     }
                 }
-                .alert("Submitted!", isPresented: $showConfirmation) {
+                .alert("Saved locally (demo)", isPresented: $showConfirmation) {
                     Button("Done") { dismiss() }
                 } message: {
-                    Text("Thanks! A moderator will review your submission shortly.")
+                    Text("The backend isn't wired up yet — your submission stays on this device. Real moderator review ships in v0.3.")
                 }
         }
         .onAppear {

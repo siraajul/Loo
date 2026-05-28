@@ -18,6 +18,10 @@ struct PhoneOTPView: View {
                     phoneInputView
                 }
                 Spacer()
+                Text("Demo mode — any 6-digit code will sign you in until backend is live.")
+                    .font(.looCaption)
+                    .foregroundStyle(Color.textSecondary)
+                    .multilineTextAlignment(.center)
             }
             .padding(Spacing.lg)
             .navigationTitle(isOTPSent ? "Enter OTP" : "Phone Number")

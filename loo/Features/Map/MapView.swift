@@ -11,9 +11,15 @@ struct MapView: View {
     private var washrooms: [Washroom]
     @State private var viewModel = MapViewModel()
 
-    /// Washrooms passed through the current filter options.
+    /// Washrooms passed through the current filter options and search text.
     private var filteredWashrooms: [Washroom] {
-        viewModel.filterOptions.apply(to: washrooms)
+        let afterFilters = viewModel.filterOptions.apply(to: washrooms)
+        let query = viewModel.searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !query.isEmpty else { return afterFilters }
+        return afterFilters.filter { w in
+            w.name.lowercased().contains(query) ||
+            (w.nameBn?.lowercased().contains(query) ?? false)
+        }
     }
 
     /// Filtered washrooms sorted by distance from the user, closest first.
