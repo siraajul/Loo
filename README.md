@@ -48,18 +48,39 @@
 
 ## 📱 Screens
 
-```
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│ 🔍 ⚙ 👤  Glass  │  │  🧭 Finder View │  │  📋 Detail View │
-│                 │  │                 │  │                 │
-│  [OSM Dhaka]    │  │   Bashundhara   │  │  ★ 4.2  Free    │
-│  📍 markers     │  │       ↑         │  │ 🚺 Women OK     │
-│         📍 me   │  │      ↑↑         │  │ ✅ Verified 3d  │
-│ ┌─────────────┐ │  │    320 m        │  │ 🕒 Open now     │
-│ │ Nearby      │ │  │     away        │  │ ✨ Clean 4.3    │
-│ │ 🏪 320m 🕌  │ │  │ [Open in Maps]  │  │ 👶 Baby change  │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
-```
+### Onboarding — the first 5 seconds sell the inclusivity story
+
+| Welcome | Built for everyone | Permission priming |
+|:---:|:---:|:---:|
+| <img src="screenshots/01.png" width="240"> | <img src="screenshots/02.png" width="240"> | <img src="screenshots/03.png" width="240"> |
+
+### Map — iOS 26 Liquid Glass top bar, floating pills over OpenStreetMap
+
+| First-launch permission prompt | Glass pills + locate-me + nearby sheet |
+|:---:|:---:|
+| <img src="screenshots/04.png" width="280"> | <img src="screenshots/05.png" width="280"> |
+
+### Detail & Finder — at-a-glance trust signals
+
+| Women-friendly · Freshness · Open-now · Cleanliness | Turn-by-turn compass with haptics |
+|:---:|:---:|
+| <img src="screenshots/08.png" width="280"> | <img src="screenshots/09.png" width="280"> |
+
+### Filters — actually filter the map + nearby list
+
+| Gender · Inclusivity · Accessibility | Amenities · Min rating |
+|:---:|:---:|
+| <img src="screenshots/06.png" width="280"> | <img src="screenshots/07.png" width="280"> |
+
+### Profile — same Liquid Glass language as onboarding
+
+<p align="center"><img src="screenshots/12.png" width="280"></p>
+
+### Submit & Sign-in flow
+
+| Pin a new washroom | Accessibility · Fee · Notes | Sign in (demo) | Phone OTP (demo) |
+|:---:|:---:|:---:|:---:|
+| <img src="screenshots/10.png" width="200"> | <img src="screenshots/11.png" width="200"> | <img src="screenshots/13.png" width="200"> | <img src="screenshots/14.png" width="200"> |
 
 ---
 
