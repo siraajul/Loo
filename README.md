@@ -279,6 +279,7 @@ The app ships with 12 Dhaka washrooms so it's usable from day one — each with 
 
 ### ✅ v0.2 — Local Fit & Inclusivity (Done)
 - [x] iOS 26 Liquid Glass top bar (search, filter, profile, locate-me)
+- [x] Three-page onboarding with permission priming and inclusivity showcase
 - [x] Women-friendly badge (pink/grey pill at-a-glance)
 - [x] Hijra (third-gender) category with own marker color
 - [x] Wudu area attribute on mosques
@@ -287,6 +288,8 @@ The app ships with 12 Dhaka washrooms so it's usable from day one — each with 
 - [x] Freshness signal ("Verified recently / aging / stale / unverified")
 - [x] Open-now status — parses `24/7` and `HH:mm-HH:mm` windows
 - [x] Filter sheet wired to map + nearby list (was decorative before)
+- [x] Search bar filters by name / Bangla name
+- [x] Open in Maps deep-link from detail view
 
 ### 🔨 v0.3 — Community (In Progress)
 - [ ] Live Supabase sync — fetch real washroom data from backend
@@ -314,7 +317,6 @@ The app ships with 12 Dhaka washrooms so it's usable from day one — each with 
 - [ ] App icon + launch screen
 - [ ] Bangla language support (বাংলা UI)
 - [ ] Accessibility — VoiceOver labels on all map markers
-- [ ] Onboarding screen for first-time users
 - [ ] TestFlight public beta
 
 ---

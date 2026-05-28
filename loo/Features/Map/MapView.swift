@@ -86,7 +86,11 @@ struct MapView: View {
             }
             .onAppear {
                 SeedData.injectIfNeeded(into: modelContext)
-                locationService.requestPermission()
+                // Onboarding requests permission with context. Only re-prompt if the user
+                // skipped onboarding without granting, so we don't pop the system dialog cold.
+                if locationService.authorizationStatus == .notDetermined {
+                    locationService.requestPermission()
+                }
             }
             .onChange(of: locationService.location) { _, loc in
                 guard let coord = loc?.coordinate else { return }

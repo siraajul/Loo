@@ -6,6 +6,7 @@ import CoreLocation
 struct looApp: App {
     @State private var router          = AppRouter()
     @State private var locationService = LocationService()
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var sharedModelContainer: ModelContainer = {
         do {
@@ -17,25 +18,33 @@ struct looApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: Bindable(router).path) {
-                MapView()
-                    .navigationDestination(for: AppRoute.self) { route in
-                        switch route {
-                        case .detail(let id):
-                            DetailView(washroomID: id)
-                        case .finder(let id):
-                            FinderView(washroomID: id)
-                        case .submit:
-                            SubmitView(prefilledCoordinate: locationService.location?.coordinate)
-                        case .editSubmission(let id):
-                            // TODO: Prefill SubmitView with existing washroom data (Week 4)
-                            SubmitView(prefilledCoordinate: nil)
-                                .onAppear { _ = id }
-                        case .profile:
-                            ProfileView()
-                        }
+            Group {
+                if hasSeenOnboarding {
+                    NavigationStack(path: Bindable(router).path) {
+                        MapView()
+                            .navigationDestination(for: AppRoute.self) { route in
+                                switch route {
+                                case .detail(let id):
+                                    DetailView(washroomID: id)
+                                case .finder(let id):
+                                    FinderView(washroomID: id)
+                                case .submit:
+                                    SubmitView(prefilledCoordinate: locationService.location?.coordinate)
+                                case .editSubmission(let id):
+                                    // TODO: Prefill SubmitView with existing washroom data (Week 4)
+                                    SubmitView(prefilledCoordinate: nil)
+                                        .onAppear { _ = id }
+                                case .profile:
+                                    ProfileView()
+                                }
+                            }
                     }
+                } else {
+                    OnboardingView()
+                        .transition(.opacity)
+                }
             }
+            .animation(.easeInOut(duration: 0.3), value: hasSeenOnboarding)
             .environment(router)
             .environment(locationService)
             .sheet(isPresented: $router.isAuthPresented) {
